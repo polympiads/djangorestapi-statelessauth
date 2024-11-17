@@ -8,6 +8,7 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.urls import include, path
 
 from rest_framework_statelessauth.contrib.auth.models import Permission, User
+from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
 from rest_framework_statelessauth.contrib.auth.wire import PermissionWire, UserWire
 from rest_framework_statelessauth.engine.abstract import AuthEngine
 from rest_framework_statelessauth.engine.acquire  import AcquireEngine
@@ -131,20 +132,6 @@ class AbstractEngineTestCases (TestCase):
         assert self.engine1.urlpatterns == []
         assert self.engine2.urlpatterns == []
         assert self.engine3.urlpatterns == []
-
-def user_acquire_view (request: HttpRequest) -> "User | None":
-    username = request.GET.get("username")
-    password = request.GET.get("password")
-    if username is None or password is None: return None
-    
-    users = list( dmodels.User.objects.filter( username = username ) )
-    if len(users) == 0: return None
-    user = users[0]
-
-    if not user.check_password(password):
-        return None
-
-    return User.from_user(user)
 
 acquire_engine = AcquireEngine( "default", UserWire(), user_acquire_view )
 refresh_engine = RefreshEngine( "default", UserWire(), user_acquire_view, 0.1, 0.2 )
@@ -352,6 +339,15 @@ class RefreshEngineTestCases (TestCase):
         client = Client()
 
         response = client.get("/refr/acquire/")
+        assert isinstance(response, JsonResponse)
+        assert response.status_code == 401
+        assert response.content     == b'{"valid": false, "token": ""}'
+    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    def test_with_url_dispatch_wrong_password (self):
+        client = Client()
+        user = dmodels.User.objects.create_user("user", "user@user.com", "somepassword")
+
+        response = client.get("/refr/acquire/?username=user&password=somewrongpassword")
         assert isinstance(response, JsonResponse)
         assert response.status_code == 401
         assert response.content     == b'{"valid": false, "token": ""}'

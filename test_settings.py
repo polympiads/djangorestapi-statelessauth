@@ -1,7 +1,9 @@
 
 from jose.backends.rsa_backend import RSAKey
 
+from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
 from rest_framework_statelessauth.contrib.auth.wire import UserWire
+from rest_framework_statelessauth.engine.refresh import RefreshEngine
 
 SECRET_KEY = 'rest_framework_statelessauth'
 
@@ -75,12 +77,13 @@ mdUxHwi1ulkspAn/fmY7f0hZpskDwcHyZmbKZuk+NU/FJ8IAcmvk9y7m25nSSc8=
 SL_AUTH_KEY_BACKENDS = {
     "default": RSAKey( SIMPLE_PRIVATE_KEY, 'RS256' )
 }
+SL_AUTH_ENGINES = {
+    "default": RefreshEngine( "default", UserWire(), user_acquire_view )
+}
 
 SL_AUTH_MIDDLEWARES = {
     "auth": {
-        "key": "default",
-        
-        "header": "Authorization",
-        "scheme": UserWire()
+        "engine": "default",
+        "header": "Authorization"
     }
 }

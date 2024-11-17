@@ -2,6 +2,7 @@
 from django.test import TestCase
 
 from rest_framework_statelessauth.config import *
+from rest_framework_statelessauth.engine.abstract import AuthEngine
 from jose.backends.rsa_backend import RSAKey
 
 from django.conf import settings
@@ -12,21 +13,18 @@ class ConfigTestCases(TestCase):
     def test_simple_auth_write (self):
         config = SAuthMiddlewareConfig()
 
-        assert config.key    == "default"
+        assert config.engine == "default"
         assert config.header == "Authorization"
-        assert config.scheme is None
         assert config.urls   is None
     def test_configured_auth_write (self):
         config = SAuthMiddlewareConfig({
-            "key"    : "simple",
+            "engine" : "simple",
             "header" : "Auth",
-            "scheme" : "custom",
             "urls"   : [ "/" ]
         })
 
-        assert config.key    == "simple"
+        assert config.engine == "simple"
         assert config.header == "Auth"
-        assert config.scheme == "custom"
         assert config.urls   == [ "/" ]
     def test_default_config (self):
         assert StatelessAuthConfig() is StatelessAuthConfig.instance()
@@ -44,20 +42,31 @@ class ConfigTestCases(TestCase):
         assert len(middlewares) == 1
         name, middleware = middlewares[0]
         assert name == "auth"
-        assert middleware.key    == "default"
+        assert middleware.engine == "default"
         assert middleware.header == "Authorization"
-        assert isinstance(middleware.scheme, UserWire)
         assert middleware.urls   is None
+
+        assert StatelessAuthConfig().get_engine( "default" ) is settings.SL_AUTH_ENGINES['default']
+        assert StatelessAuthConfig().get_engine( "_______" ) is None
+
+        assert middleware.get_engine() is not None
+        middleware = SAuthMiddlewareConfig()
+        middleware.engine = "default"
+        assert middleware.get_engine() is not None
+        middleware.engine = "oe"
+        assert middleware.get_engine() is None
     def test_custom_config (self):
         samc1 = SAuthMiddlewareConfig()
         samc2 = SAuthMiddlewareConfig({
-            "key"    : "simple",
+            "engine" : "simple",
             "header" : "Auth",
-            "scheme" : "custom",
             "urls"   : [ "/" ]
         })
+        eng = AuthEngine( "simple", AuthWire )
         instance = StatelessAuthConfig.create_config({
             'nk': 'CKEY'
+        }, {
+            "ne": eng
         }, {
             "nm" : samc1,
             'rm' : samc2
@@ -68,4 +77,6 @@ class ConfigTestCases(TestCase):
 
         assert instance.get_key('nk') == 'CKEY'
         assert instance.get_key('ok') is None
+        assert instance.get_engine('ne') is eng
+        assert instance.get_engine('oe') is None
         assert instance.middlewares == [ ('nm', samc1), ('rm', samc2) ]
