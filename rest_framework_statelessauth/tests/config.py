@@ -14,17 +14,20 @@ class ConfigTestCases(TestCase):
         config = SAuthMiddlewareConfig()
 
         assert config.engine == "default"
-        assert config.header == "Authorization"
+        assert config.header == ("Authorization", "Bearer")
+        assert config.field  == "unknown"
         assert config.urls   is None
     def test_configured_auth_write (self):
         config = SAuthMiddlewareConfig({
             "engine" : "simple",
-            "header" : "Auth",
+            "header" : ("Auth", "Type"),
+            "field"  : "cfield",
             "urls"   : [ "/" ]
         })
 
         assert config.engine == "simple"
-        assert config.header == "Auth"
+        assert config.header == ("Auth", "Type")
+        assert config.field  == "cfield"
         assert config.urls   == [ "/" ]
     def test_default_config (self):
         assert StatelessAuthConfig() is StatelessAuthConfig.instance()
@@ -43,7 +46,8 @@ class ConfigTestCases(TestCase):
         name, middleware = middlewares[0]
         assert name == "auth"
         assert middleware.engine == "default"
-        assert middleware.header == "Authorization"
+        assert middleware.header == ("Authorization", "Bearer")
+        assert middleware.field  == "user"
         assert middleware.urls   is None
 
         assert StatelessAuthConfig().get_engine( "default" ) is settings.SL_AUTH_ENGINES['default']
@@ -60,6 +64,7 @@ class ConfigTestCases(TestCase):
         samc2 = SAuthMiddlewareConfig({
             "engine" : "simple",
             "header" : "Auth",
+            "field"  : "nfield",
             "urls"   : [ "/" ]
         })
         eng = AuthEngine( "simple", AuthWire )

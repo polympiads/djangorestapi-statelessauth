@@ -83,7 +83,22 @@ SL_AUTH_ENGINES = {
 
 SL_AUTH_MIDDLEWARES = {
     "auth": {
-        "engine": "default",
-        "header": "Authorization"
+        "engine" : "default",
+        "header" : ("Authorization", "Bearer"),
+        "field"  : "user"
     }
 }
+
+
+
+PASSWORD_HASHERS = [
+    # MD5 Password Hashing is used to make tests run a
+    # Little bit faster this is not meant to be done in
+    # Production as it decreases security. 
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+]

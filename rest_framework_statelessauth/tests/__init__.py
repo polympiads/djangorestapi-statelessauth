@@ -7,6 +7,7 @@ from rest_framework_statelessauth.tests.wire \
 from rest_framework_statelessauth.tests.config import ConfigTestCases
 from rest_framework_statelessauth.tests.engine \
     import AbstractEngineTestCases, AcquireEngineTestCases, RefreshEngineTestCases
+from rest_framework_statelessauth.tests.middlewares import MiddlewareTestCases
 
 class InitialTestCases (TestCase):
     def test_initial(self):

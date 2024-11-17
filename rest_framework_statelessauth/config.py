@@ -11,7 +11,8 @@ from django.conf import settings
 
 class SAuthMiddlewareConfig:
     engine: str
-    header: str
+    header: Tuple[str, str]
+    field : str
 
     urls: List[str] | None
 
@@ -20,12 +21,18 @@ class SAuthMiddlewareConfig:
 
     def __init__(self, obj: Dict = {}) -> None:
         self.engine = 'default'
-        self.header = 'Authorization'
+        self.header = ('Authorization', 'Bearer')
+        self.field  = 'unknown'
         self.urls   = None
 
-        if 'engine' in obj: self.engine = obj['engine']
-        if 'header' in obj: self.header = obj['header']
-        if 'urls'   in obj: self.urls   = obj['urls']
+        if 'engine' in obj:
+            self.engine = obj['engine']
+        if 'header' in obj:
+            self.header = obj['header']
+        if 'urls'   in obj:
+            self.urls   = obj['urls']
+        if 'field'  in obj:
+            self.field  = obj['field']
     @staticmethod
     def create (input):
         if isinstance(input, SAuthMiddlewareConfig): return input
@@ -43,7 +50,7 @@ class StatelessAuthConfig:
     __engines      : "Dict[str, AuthEngine]"
 
     @property
-    def middlewares (self):
+    def middlewares (self) -> List[Tuple[str, SAuthMiddlewareConfig]]:
         return self.__middlewares
 
     def get_key (self, name: str) -> "Key | None":
