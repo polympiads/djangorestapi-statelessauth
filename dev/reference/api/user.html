@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Authentication Application &#8212; dra_statelessauth 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Configuration" href="config.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="authentication-application">
+<span id="user"></span><h1>Authentication Application<a class="headerlink" href="#authentication-application" title="Permalink to this headline">¶</a></h1>
+<p>This page documents the inner API of the <code class="docutils literal notranslate"><span class="pre">.contrib.auth</span></code> package, defining an interface
+similar to the one provided by default by the <code class="docutils literal notranslate"><span class="pre">django.contrib.auth</span></code> model. It defines
+objects that are detached from a database, but contain the same data as the models inside
+the django data, such as <code class="docutils literal notranslate"><span class="pre">User</span></code>, <code class="docutils literal notranslate"><span class="pre">Group</span></code> and <code class="docutils literal notranslate"><span class="pre">Permission</span></code> as well as a way to go
+from the database to the detached model using the <code class="docutils literal notranslate"><span class="pre">User.from_user</span></code>, <code class="docutils literal notranslate"><span class="pre">Group.from_group</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Permission.from_permission</span></code> static methods.</p>
+<p>It also defines <code class="docutils literal notranslate"><span class="pre">AuthWire</span></code> implementations for all of the three object types, as well
+as an acquire view, <code class="docutils literal notranslate"><span class="pre">user_acquire_view</span></code>, that allows a user to login through GET parameters and retrieve an
+authorization token for later use.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">dra_statelessauth</a></h1>
+
+
+
+
+
+
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference guides</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="wire.html">Wire Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="engine.html">Authentication Engines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="middleware.html">Authentication Middleware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Authentication Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>Versions</h3>
+<ul>
+    
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/dev">dev</a> (Current)</p></li>
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/">release</a> </p></li>
+</ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, polympiads.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/reference/api/user.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Configuration &#8212; dra_statelessauth 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Authentication Application" href="user.html" />
+    <link rel="prev" title="Authentication Middleware" href="middleware.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="configuration">
+<span id="config"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>The configuration is separated into three parts :</p>
+<ol class="arabic simple">
+<li><p>Key backends - Stored in <code class="docutils literal notranslate"><span class="pre">SL_AUTH_KEY_BACKENDS</span></code>, it should be a dictionary containing keys from the <code class="docutils literal notranslate"><span class="pre">python-jose</span></code> package.</p></li>
+<li><p>Authentication Engines - Stored in <code class="docutils literal notranslate"><span class="pre">SL_AUTH_ENGINES</span></code>, it should be a dictionary containing the authentication engines.</p></li>
+<li><p>Sub middlewares - Stored in <code class="docutils literal notranslate"><span class="pre">SL_AUTH_MIDDLEWARES</span></code>, it should be a dictionary containing sub middlewares configurations.</p></li>
+</ol>
+<p>A sub middleware configuration is a dictionary with any of the three following entries :</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">engine</span></code> - The name of the engine, which will be looked up inside the <code class="docutils literal notranslate"><span class="pre">SL_AUTH_ENGINES</span></code> table.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">header</span></code> - The header in which the token should be.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">field</span></code> - The field in which the resulted value should be stored.</p></li>
+</ol>
+<p>The behaviour of these fields is explained in the <a class="reference internal" href="middleware.html#middleware"><span class="std std-ref">middleware section</span></a>.</p>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>One example of a possible configuration is the following :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SIMPLE_PRIVATE_KEY</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="n">SL_AUTH_KEY_BACKENDS</span> <span class="o">=</span> <span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">RSAKey</span><span class="p">(</span> <span class="n">SIMPLE_PRIVATE_KEY</span><span class="p">,</span> <span class="s1">&#39;RS256&#39;</span> <span class="p">)</span>
+</span><span class="p">}</span>
+<span class="n">SL_AUTH_ENGINES</span> <span class="o">=</span> <span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">RefreshEngine</span><span class="p">(</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">UserWire</span><span class="p">(),</span> <span class="n">user_acquire_view</span> <span class="p">)</span>
+</span><span class="p">}</span>
+
+<span class="n">SL_AUTH_MIDDLEWARES</span> <span class="o">=</span> <span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;auth&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="hll">        <span class="s2">&quot;engine&quot;</span> <span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;header&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">,</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">),</span>
+</span><span class="hll">        <span class="s2">&quot;field&quot;</span>  <span class="p">:</span> <span class="s2">&quot;user&quot;</span>
+</span><span class="hll">    <span class="p">}</span>
+</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>It describes a configuration similar to the default authentication of django.
+This example is minimal, and here, you would miss the url patterns that you can add in the following way :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">engine</span> <span class="o">=</span> <span class="n">StatelessAuthConfig</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">get_engine</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+</span>
+<span class="n">urlspatterns</span> <span class="o">=</span> <span class="p">[</span>
+<span class="hll">    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/account/&quot;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">urlpatterns</span><span class="p">))</span>
+</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You would also need to add the authentication middleware in the following way to your configuration :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+</span>    <span class="c1"># ... other middlewares</span>
+<span class="hll">    <span class="s2">&quot;rest_framework_statelessauth.middleware.AuthMiddleware&quot;</span>
+</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">dra_statelessauth</a></h1>
+
+
+
+
+
+
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference guides</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="wire.html">Wire Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="engine.html">Authentication Engines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="middleware.html">Authentication Middleware</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user.html">Authentication Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>Versions</h3>
+<ul>
+    
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/dev">dev</a> (Current)</p></li>
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/">release</a> </p></li>
+</ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, polympiads.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/reference/api/config.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

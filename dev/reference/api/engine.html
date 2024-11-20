@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Authentication Engines &#8212; dra_statelessauth 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Authentication Middleware" href="middleware.html" />
+    <link rel="prev" title="Wire Interface" href="wire.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="authentication-engines">
+<span id="engine"></span><h1>Authentication Engines<a class="headerlink" href="#authentication-engines" title="Permalink to this headline">¶</a></h1>
+<p>This page documents the inner API of the <code class="docutils literal notranslate"><span class="pre">AuthEngine[T]</span></code> interface, and its default implementations.
+It contains the following modules</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#abstract-engine"><span class="std std-ref">.engine.abstract</span></a> - Module responsible for the abstract authentication engine interface</p></li>
+<li><p><a class="reference internal" href="#acquire-engine"><span class="std std-ref">.engine.acquire</span></a> - Module responsible for the classical authentication engine with an acquire view</p></li>
+<li><p><a class="reference internal" href="#refresh-engine"><span class="std std-ref">.engine.refresh</span></a> - Module responsible for refreshable authentication engine with an acquire and a refresh view</p></li>
+</ol>
+<section id="module-engine-abstract">
+<span id="abstract-engine"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">.engine.abstract</span></code><a class="headerlink" href="#module-engine-abstract" title="Permalink to this headline">¶</a></h2>
+<p>This module contains a single class, the abstract authentication engine.
+The purpose of an authentication engine is to define properly how to encode
+the different tokens.</p>
+<section id="class-authengine-t">
+<h3><code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">AuthEngine[T]</span></code><a class="headerlink" href="#class-authengine-t" title="Permalink to this headline">¶</a></h3>
+<p>This class implements the default functions an authentication engine should
+provide, as well as different tools to generate the tokens properly.</p>
+<section id="constructor-init-self-keyname-scheme-algorithms">
+<h4>constructor <code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">keyname,</span> <span class="pre">scheme,</span> <span class="pre">algorithms)</span></code><a class="headerlink" href="#constructor-init-self-keyname-scheme-algorithms" title="Permalink to this headline">¶</a></h4>
+<p>This constructor defines an authentication engine by providing the key name,
+linking it through the configuration. One also needs to provide the algorithms
+used to encode and decode the tokens, the first element of this list being how it
+is encoded. All of them are used to decode the tokens. By default it is <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">'RS256'</span> <span class="pre">]</span></code>.
+Finally, one needs to provide the scheme used to transform the data into json, it
+needs to be an <code class="docutils literal notranslate"><span class="pre">AuthWire[T]</span></code></p>
+</section>
+<section id="property-key">
+<h4>property <code class="docutils literal notranslate"><span class="pre">key</span></code><a class="headerlink" href="#property-key" title="Permalink to this headline">¶</a></h4>
+<p>Returns the key used for encrypting / decrypting the tokens.
+By default, goes through the configuration to retrieve the key
+from its name, and if it has been set, the key will be the one
+provided to bypass configuration.</p>
+</section>
+<section id="property-urlpatterns">
+<h4>property <code class="docutils literal notranslate"><span class="pre">urlpatterns</span></code><a class="headerlink" href="#property-urlpatterns" title="Permalink to this headline">¶</a></h4>
+<p>Defines a set of urls used for authentication.
+For example, it can be used to acquire a token or to refresh it.</p>
+</section>
+<section id="method-headers-self-data">
+<h4>method <code class="docutils literal notranslate"><span class="pre">headers(self,</span> <span class="pre">data)</span></code><a class="headerlink" href="#method-headers-self-data" title="Permalink to this headline">¶</a></h4>
+<p>Defines a way for sub classes to define the JWS headers. By default, return <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</p>
+</section>
+<section id="method-payload-from-wired-self-wired">
+<h4>method <code class="docutils literal notranslate"><span class="pre">payload_from_wired(self,</span> <span class="pre">wired)</span></code><a class="headerlink" href="#method-payload-from-wired-self-wired" title="Permalink to this headline">¶</a></h4>
+<p>Defines how to go from the encoded value (wired) to the payload, allows the sub class
+to add custom properties to the payload. By default, returns <code class="docutils literal notranslate"><span class="pre">wired</span></code>.</p>
+</section>
+<section id="method-wired-from-payload-self-payload">
+<h4>method <code class="docutils literal notranslate"><span class="pre">wired_from_payload(self,</span> <span class="pre">payload)</span></code><a class="headerlink" href="#method-wired-from-payload-self-payload" title="Permalink to this headline">¶</a></h4>
+<p>Defines how to go from the payload to the encoded value (wired), allows the sub class
+to remove the custom properties it has added. By default, returns <code class="docutils literal notranslate"><span class="pre">payload</span></code>.</p>
+</section>
+<section id="method-validate-payload-self-payload">
+<h4>method <code class="docutils literal notranslate"><span class="pre">validate_payload</span> <span class="pre">(self,</span> <span class="pre">payload)</span></code><a class="headerlink" href="#method-validate-payload-self-payload" title="Permalink to this headline">¶</a></h4>
+<p>This method is to validate the payload, for example if it had a timeout, it returns whether the deadline
+isn’t yet over. By default, returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</section>
+<section id="method-encode-self-data">
+<h4>method <code class="docutils literal notranslate"><span class="pre">encode(self,</span> <span class="pre">data)</span></code><a class="headerlink" href="#method-encode-self-data" title="Permalink to this headline">¶</a></h4>
+<p>Encodes the data of type <code class="docutils literal notranslate"><span class="pre">T</span></code> into a signed json web token by first
+transforming it into its wired form and then its payload form.</p>
+</section>
+<section id="method-decode-self-token-verify-return-payload">
+<h4>method <code class="docutils literal notranslate"><span class="pre">decode(self,</span> <span class="pre">token,</span> <span class="pre">verify,</span> <span class="pre">return_payload)</span></code><a class="headerlink" href="#method-decode-self-token-verify-return-payload" title="Permalink to this headline">¶</a></h4>
+<p>Decodes the data by first verifying its signature and that the payload is valid.</p>
+<ol class="arabic simple">
+<li><p>By default <code class="docutils literal notranslate"><span class="pre">verify</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, and any error raise <code class="docutils literal notranslate"><span class="pre">JWSError</span></code>, otherwise in case of an error it returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p>By default <code class="docutils literal notranslate"><span class="pre">return_payload</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, and it only checks the signature and returns the payload if it is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="module-engine-acquire">
+<span id="acquire-engine"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">.engine.acquire</span></code><a class="headerlink" href="#module-engine-acquire" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the class <code class="docutils literal notranslate"><span class="pre">AcquireEngine[T]</span></code>.
+It takes in its constructor the same data as the abstract
+authentication engine and a function that takes the same arguments
+as a django view but should return either <code class="docutils literal notranslate"><span class="pre">None</span></code> or an object of
+type <code class="docutils literal notranslate"><span class="pre">T</span></code>. This view represents how a user acquires an authentication
+token with type <code class="docutils literal notranslate"><span class="pre">T</span></code>. It then implements the true django view
+<code class="docutils literal notranslate"><span class="pre">acquire_view</span></code> that wraps your view, and define a urlpattern at
+<code class="docutils literal notranslate"><span class="pre">acquire/</span></code> that you can find in the <code class="docutils literal notranslate"><span class="pre">urlpatterns</span></code> method.</p>
+</section>
+<section id="module-engine-refresh">
+<span id="refresh-engine"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">.engine.refresh</span></code><a class="headerlink" href="#module-engine-refresh" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the class <code class="docutils literal notranslate"><span class="pre">RefreshEngine[T]</span></code>,
+which is equivalent in behaviour as <code class="docutils literal notranslate"><span class="pre">AcquireEngine[T]</span></code>,
+except that every token has a short time expiration date,
+and a long time expiration date, that you can configure with the
+two parameters at the end of the constructor in this order.</p>
+<p>The payload is considered valid if the short expiration date hasn’t
+yet expired.
+It defines a new view <code class="docutils literal notranslate"><span class="pre">refresh_view</span></code> allowing you to refresh the
+short time and long time expiration dates if the long one hasn’t expired.
+This view is exposed at the url <code class="docutils literal notranslate"><span class="pre">refresh/</span></code> in <code class="docutils literal notranslate"><span class="pre">urlpatterns</span></code>. The
+class also overrides the <code class="docutils literal notranslate"><span class="pre">wired_from_payload</span></code> and <code class="docutils literal notranslate"><span class="pre">payload_from_wired</span></code>
+methods.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">dra_statelessauth</a></h1>
+
+
+
+
+
+
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference guides</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="wire.html">Wire Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Authentication Engines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="middleware.html">Authentication Middleware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user.html">Authentication Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>Versions</h3>
+<ul>
+    
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/dev">dev</a> (Current)</p></li>
+    <li><p style="margin: 0;"><a href="https://polympiads.github.io/djangorestapi-statelessauth/">release</a> </p></li>
+</ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, polympiads.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/reference/api/engine.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
