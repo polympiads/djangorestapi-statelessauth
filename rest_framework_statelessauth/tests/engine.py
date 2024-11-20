@@ -7,7 +7,7 @@ from django.test import Client, RequestFactory, TestCase, override_settings
 from django.contrib.auth.models import AnonymousUser, User
 from django.urls import include, path
 
-from rest_framework_statelessauth.contrib.auth.models import Permission, User
+from rest_framework_statelessauth.contrib.auth.models import Group, Permission, User
 from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
 from rest_framework_statelessauth.contrib.auth.wire import PermissionWire, UserWire
 from rest_framework_statelessauth.engine.abstract import AuthEngine
@@ -84,6 +84,24 @@ class AbstractEngineTestCases (TestCase):
         payload = PermissionWire().encode(permission)
         expects = jws.sign( payload, self.nkey, {}, "HS256" )
         assert expects == encoded
+    def test_encode_decode_in_one_second (self):
+        user = User( "user1", False, True, False, True, False, [
+            Group( "group1", [
+                Permission("perm1", "perm1"),
+                Permission("access.log", "access.log")
+            ] )
+        ] )
+
+        engine = AuthEngine( "default", UserWire(), [ "RS256" ] )
+        total = 0
+        for _ in range(100):
+            start = time.time()
+            payload = engine.encode(user)
+            engine.decode(payload)
+            end = time.time()
+
+            total += end - start
+        assert total <= 1
     def test_decode (self):
         for engine in [self.engine1, self.engine2, self.engine3]:
             permission = Permission( "p1", "c1" )
@@ -273,6 +291,29 @@ class RefreshEngineTestCases (TestCase):
         assert isinstance(response, JsonResponse)
         assert response.status_code == 400
         assert response.content     == b'{"valid": false, "token": ""}'
+    def test_refresh_wrong_token (self):
+        engine = RefreshEngine( "default", UserWire(), user_acquire_view )
+
+        user = dmodels.User.objects.create_user("user", "user@user.com", "somepassword")
+
+        request = self.factory.get("/api/v1/.../acquire/?username=user&password=somepassword")
+
+        response = self.engine.acquire_view( request )
+        ctime = time.time_ns()
+
+        assert isinstance(response, JsonResponse)
+        assert response.status_code == 200
+
+        payload = json.loads( response.content )
+        assert payload["valid"]
+        token = payload["token"]
+       
+        request = self.factory.get("/api/v1/.../refresh/", headers = { "Refresh" : token + 'a' })
+
+        response = self.engine.refresh_view( request )
+        assert isinstance(response, JsonResponse)
+        assert response.status_code == 401
+        assert response.content     == b'{"valid": false, "token": ""}'
     def test_refresh_passed_deadline (self):
         engine = RefreshEngine( "default", UserWire(), user_acquire_view )
 
@@ -289,7 +330,7 @@ class RefreshEngineTestCases (TestCase):
         payload = json.loads( response.content )
         assert payload["valid"]
         token = payload["token"]
-        time.sleep(0.1)
+        time.sleep(0.2)
         
         request = self.factory.get("/api/v1/.../refresh/", headers = { "Refresh" : token })
 

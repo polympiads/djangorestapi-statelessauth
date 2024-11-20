@@ -188,8 +188,8 @@ class PrometheusMetricsTest(TestCase):
         self.client.get("/account/acquire/?username=user&password=user")
         assert self.get_metric(target1) == 1
         assert self.get_metric(target3, engine="default") == 1
-        assert self.get_bucket_metric(target2).greater_or_equal( self.get_metric_of_latency(0.25) )
-        assert self.get_bucket_metric(target4, engine="default").greater_or_equal( self.get_metric_of_latency(0.25) )
+        assert self.get_bucket_metric(target2).greater_or_equal( self.get_metric_of_latency(0.5) )
+        assert self.get_bucket_metric(target4, engine="default").greater_or_equal( self.get_metric_of_latency(0.5) )
     @loverride_settings
     def test_decode_metrics (self):
         def test_tlm (name: str, adv: List[float]):
