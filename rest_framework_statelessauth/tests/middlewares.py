@@ -12,7 +12,7 @@ from rest_framework_statelessauth.middlewares import AuthMiddleware
 from rest_framework_statelessauth.config import StatelessAuthConfig
 
 def home_page (request: HttpRequest):
-    user: "User | None" = request.user
+    user: "User | None" = getattr(request, 'user', None)
 
     username = "Anonymous"
     if user is not None:
@@ -52,6 +52,12 @@ class MiddlewareTestCases(TestCase):
 
         assert response.status_code == 200
         assert response.content     == b"Hello, user !"
+    def test_home_page_wrong_token (self):
+        request = self.factory.get("/", headers={ "Authorization": f"Bearer WrongToken" })
+
+        response = self.home_page(request)
+
+        assert response.status_code == 403
     def test_home_page_signed_in_no_type (self):
         chome_page = AuthMiddleware(
             home_page,

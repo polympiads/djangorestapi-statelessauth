@@ -4,6 +4,7 @@ from typing import Callable, Generic, TypeVar
 from django.http import HttpRequest, JsonResponse
 from django.urls import path
 from rest_framework_statelessauth.engine.abstract import AuthEngine
+from rest_framework_statelessauth.prometheus import engine_view_decorator, acquire_engine_acquire_metrics
 from rest_framework_statelessauth.wire import AuthWire
 
 T = TypeVar("T")
@@ -22,6 +23,7 @@ class AcquireEngine(Generic[T], AuthEngine[T]):
 
         self.__acquire_view = acquire_view
 
+    @engine_view_decorator(acquire_engine_acquire_metrics)
     def acquire_view (self, request: HttpRequest, *args, **kwargs):
         result = self.__acquire_view(request, *args, **kwargs)
         if result is None:

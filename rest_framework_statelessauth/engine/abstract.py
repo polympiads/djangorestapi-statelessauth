@@ -1,6 +1,7 @@
 
 from typing import Generic, List, Tuple, TypeVar
 from rest_framework_statelessauth.config import StatelessAuthConfig
+from rest_framework_statelessauth.prometheus import stateless_auth_decode_decorator, stateless_auth_encode_decorator
 from rest_framework_statelessauth.wire import AuthWire
 
 from jose.jws import Key
@@ -11,6 +12,15 @@ import json
 T = TypeVar("T")
 
 class AuthEngine(Generic[T]):
+    # Engine Name
+    __name: str = None
+    @property
+    def name (self):
+        return self.__name
+    @name.setter
+    def name (self, value: str):
+        self.__name = value
+
     __key: "Key | None" = None
 
     __keyname : str
@@ -46,9 +56,11 @@ class AuthEngine(Generic[T]):
     def validate_payload (self, payload):
         return True
 
+    @stateless_auth_encode_decorator
     def encode (self, data: T):
         wired = self.__scheme.encode(data)
         return jws.sign(self.payload_from_wired(wired), self.key, self.headers(data), self.__algorithms[0])
+    @stateless_auth_decode_decorator
     def decode (self, token, verify = True, return_payload = False):
         try:
             payload = jws.verify(token, self.key.public_key(), self.__algorithms)

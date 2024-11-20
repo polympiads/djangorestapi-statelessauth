@@ -2,3 +2,6 @@
 django
 coverage
 python-jose
+
+django-prometheus
+prometheus-client

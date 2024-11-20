@@ -5,6 +5,7 @@ from typing import Callable, Generic, TypeVar
 from django.http import HttpRequest, JsonResponse
 from django.urls import path
 from rest_framework_statelessauth.engine.abstract import AuthEngine
+from rest_framework_statelessauth.prometheus import engine_view_decorator, refresh_engine_acquire_metrics, refresh_engine_refresh_metrics
 from rest_framework_statelessauth.wire import AuthWire
 
 import time
@@ -50,6 +51,7 @@ class RefreshEngine(Generic[T], AuthEngine[T]):
     def validate_payload(self, payload):
         return time.time_ns() <= payload['alt']
 
+    @engine_view_decorator(refresh_engine_acquire_metrics)
     def acquire_view (self, request: HttpRequest, *args, **kwargs):
         result = self.__acquire_view(request, *args, **kwargs)
 
@@ -64,15 +66,31 @@ class RefreshEngine(Generic[T], AuthEngine[T]):
             "token": self.encode(result)
         }, status=200)
     def refresh_view (self, request: HttpRequest, *args, **kwargs):
+        metrics = refresh_engine_refresh_metrics
+        metrics._init()
+
+        start = time.time()
+        
         refresh_header = request.headers.get("Refresh")
         if refresh_header is None:
+            metrics.total_counter  .run( self.name, time.time() - start )
+            metrics.missing_counter.run( self.name, time.time() - start )
             return JsonResponse({
                 "valid": False,
                 "token": ""
             }, status=400)
 
         payload = self.decode(refresh_header, verify=False, return_payload=True)
+        if payload is None:
+            metrics.total_counter.run( self.name, time.time() - start )
+            metrics.wrong_counter.run( self.name, time.time() - start )
+            return JsonResponse({
+                "valid": False,
+                "token": ""
+            }, status=401)
         if time.time_ns() > payload['rlt']:
+            metrics.total_counter.run( self.name, time.time() - start )
+            metrics.expired_counter.run( self.name, time.time() - start )
             return JsonResponse({
                 "valid": False,
                 "token": ""
@@ -80,6 +98,8 @@ class RefreshEngine(Generic[T], AuthEngine[T]):
 
         new_payload = self.__scheme.decode( self.wired_from_payload( payload ) )
 
+        metrics.total_counter.run( self.name, time.time() - start )
+        metrics.success_counter.run( self.name, time.time() - start )
         return JsonResponse({
             "valid": True,
             "token": self.encode(new_payload)

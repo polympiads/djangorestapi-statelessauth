@@ -72,6 +72,11 @@ class StatelessAuthConfig:
         if hasattr(settings, self.SL_AUTH_ENGINES):
             self.__engines = getattr(settings, self.SL_AUTH_ENGINES)
 
+            for name in self.__engines.keys():
+                engine = self.__engines[name]
+
+                engine.name = name
+
     def __init__(self, load_config = True) -> None:
         if load_config:
             self.load_config()
