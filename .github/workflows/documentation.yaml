@@ -21,7 +21,8 @@ jobs:
           sudo apt-get install python3-sphinx
       - name: Sphinx build
         run: |
-          branches=`git branch -r | cut -c 3- | sed 's/origin\///g'`
+          branches=`python3 doc/listbranches.py`
+          echo Found branches $branches
 
           mkdir _pages_build
           for branch in $branches; do
@@ -36,7 +37,7 @@ jobs:
               fi
 
               if [ -d "doc" ]; then
-                echo "Found documentation for branch $branch"
+                echo "Found documentation for branch $branch, target=$branch_target"
 
                 sphinx-build doc $branch_target > /dev/null
               fi

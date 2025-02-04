@@ -7,3 +7,4 @@ _project
 _manage.py
 test.db
 db.sqlite3
+run_stresstest.py
