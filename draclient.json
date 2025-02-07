@@ -1,0 +1,658 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 3,
+    "links": [],
+    "panels": [
+      {
+        "datasource": {
+          "default": true,
+          "type": "prometheus",
+          "uid": "de14dgfhfmwaoa"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Middlewares where Header Missing"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Successful Middlewares"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "green",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Failed Middlewares"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "orange",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Middlewares with Type Missing"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_wrong_token_total{middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Failed Middlewares",
+            "range": true,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_no_type_total{middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Middlewares with Type Missing",
+            "range": true,
+            "refId": "D"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_missing_total{middleware=\"$_middleware\"}[$__rate_interval])",
+            "instant": false,
+            "legendFormat": "Rate of Middlewares where Header Missing",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_valid_total{middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Successful Middlewares",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Middleware Rates",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": true,
+          "type": "prometheus",
+          "uid": "de14dgfhfmwaoa"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 3,
+        "options": {
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "exponent": 0.5,
+            "fill": "dark-orange",
+            "mode": "scheme",
+            "reverse": false,
+            "scale": "exponential",
+            "scheme": "Oranges",
+            "steps": 64
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          },
+          "filterValues": {
+            "le": 1e-9
+          },
+          "legend": {
+            "show": true
+          },
+          "rowsFrame": {
+            "layout": "auto"
+          },
+          "tooltip": {
+            "mode": "single",
+            "showColorScale": false,
+            "yHistogram": false
+          },
+          "yAxis": {
+            "axisPlacement": "left",
+            "reverse": false
+          }
+        },
+        "pluginVersion": "11.2.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "disableTextWrap": false,
+            "editorMode": "code",
+            "expr": "sum(increase(stateless_auth_middleware_run_latency_per_config_bucket{ middleware=\"$_middleware\"}[$__rate_interval])) by (le)",
+            "format": "heatmap",
+            "fullMetaSearch": false,
+            "includeNullMetadata": false,
+            "instant": false,
+            "legendFormat": "{{le}}",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "Authentication Middleware Latency",
+        "type": "heatmap"
+      },
+      {
+        "datasource": {
+          "default": true,
+          "type": "prometheus",
+          "uid": "de14dgfhfmwaoa"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 25,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Middlewares where Header Missing"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "blue",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Successful Middlewares"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "green",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Failed Middlewares"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "orange",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Rate of Middlewares with Type Missing"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "yellow",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "id": 4,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_wrong_token_total{job=\"$_job\", middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Failed Middlewares",
+            "range": true,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_no_type_total{job=\"$_job\", middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Middlewares with Type Missing",
+            "range": true,
+            "refId": "D"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_missing_total{job=\"$_job\", middleware=\"$_middleware\"}[$__rate_interval])",
+            "instant": false,
+            "legendFormat": "Rate of Middlewares where Header Missing",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "editorMode": "code",
+            "expr": "rate(stateless_auth_middleware_run_per_config_valid_total{job=\"$_job\", middleware=\"$_middleware\"}[$__rate_interval])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "Rate of Successful Middlewares",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Middleware Rates for job",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": true,
+          "type": "prometheus",
+          "uid": "de14dgfhfmwaoa"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        },
+        "id": 2,
+        "options": {
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "exponent": 0.5,
+            "fill": "dark-orange",
+            "mode": "scheme",
+            "reverse": false,
+            "scale": "exponential",
+            "scheme": "Oranges",
+            "steps": 64
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          },
+          "filterValues": {
+            "le": 1e-9
+          },
+          "legend": {
+            "show": true
+          },
+          "rowsFrame": {
+            "layout": "auto"
+          },
+          "tooltip": {
+            "mode": "single",
+            "showColorScale": false,
+            "yHistogram": false
+          },
+          "yAxis": {
+            "axisPlacement": "left",
+            "reverse": false
+          }
+        },
+        "pluginVersion": "11.2.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "de14dgfhfmwaoa"
+            },
+            "disableTextWrap": false,
+            "editorMode": "code",
+            "expr": "sum(increase(stateless_auth_middleware_run_latency_per_config_bucket{job=\"$_job\", middleware=\"$_middleware\"}[$__rate_interval])) by (le)",
+            "format": "heatmap",
+            "fullMetaSearch": false,
+            "includeNullMetadata": false,
+            "instant": false,
+            "legendFormat": "{{le}}",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "Authentication Middleware Latency for job",
+        "type": "heatmap"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 39,
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "isNone": true,
+            "selected": false,
+            "text": "None",
+            "value": ""
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "de14dgfhfmwaoa"
+          },
+          "definition": "",
+          "description": "Target job name",
+          "hide": 0,
+          "includeAll": false,
+          "label": "jobname",
+          "multi": false,
+          "name": "_job",
+          "options": [],
+          "query": "",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "isNone": true,
+            "selected": false,
+            "text": "None",
+            "value": ""
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "de14dgfhfmwaoa"
+          },
+          "definition": "",
+          "description": "Middleware Target",
+          "hide": 0,
+          "includeAll": false,
+          "label": "middleware",
+          "multi": false,
+          "name": "_middleware",
+          "options": [],
+          "query": "",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Authentication Middleware",
+    "uid": "de4k4ye4mowe8d",
+    "version": 3,
+    "weekStart": ""
+  }
