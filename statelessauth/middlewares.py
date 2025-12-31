@@ -3,8 +3,8 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 
-from rest_framework_statelessauth.config import StatelessAuthConfig
-from rest_framework_statelessauth.prometheus import RunningOnMetric, middleware_decorator, middleware_metrics
+from statelessauth.config import StatelessAuthConfig
+from statelessauth.prometheus import RunningOnMetric, middleware_decorator, middleware_metrics
 
 class AuthMiddleware:
     def __init__(self, get_response, config = None):

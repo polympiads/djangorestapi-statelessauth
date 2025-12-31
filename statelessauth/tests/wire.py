@@ -4,11 +4,11 @@ from typing import Any
 from django.test import TestCase
 from django.contrib.auth import models
 from django.contrib.contenttypes.models import ContentType
-from rest_framework_statelessauth.tests.utils import TestWire
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.tests.utils import TestWire
+from statelessauth.wire import AuthWire
 
-from rest_framework_statelessauth.contrib.auth.models import User, Group, Permission
-from rest_framework_statelessauth.contrib.auth.wire   import UserWire, GroupWire, PermissionWire
+from statelessauth.contrib.auth.models import User, Group, Permission
+from statelessauth.contrib.auth.wire   import UserWire, GroupWire, PermissionWire
 
 class SimpleUserModel:
     username: str

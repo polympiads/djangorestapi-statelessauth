@@ -1,8 +1,8 @@
 
 from typing import TYPE_CHECKING, Any, Callable
 
-from rest_framework_statelessauth.contrib.auth.models import Group, Permission, User
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.contrib.auth.models import Group, Permission, User
+from statelessauth.wire import AuthWire
 
 class PermissionWire(AuthWire[Permission]):
     def encode(self, permission: Permission) -> Any:

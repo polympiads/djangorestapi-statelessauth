@@ -1,10 +1,10 @@
 
 from typing import TYPE_CHECKING, Dict, List, Self, Tuple, Union
 
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.wire import AuthWire
 
 if TYPE_CHECKING:
-    from rest_framework_statelessauth.engine.abstract import AuthEngine
+    from statelessauth.engine.abstract import AuthEngine
 
 from jose.jws import Key
 from django.conf import settings

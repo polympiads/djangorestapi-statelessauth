@@ -63,7 +63,7 @@ You would also need to add the authentication middleware in the following way to
 
     MIDDLEWARE = [
         # ... other middlewares
-        "rest_framework_statelessauth.middleware.AuthMiddleware"
+        "statelessauth.middleware.AuthMiddleware"
     ]
 
 .. toctree::
