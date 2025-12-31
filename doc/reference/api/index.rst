@@ -4,7 +4,7 @@
 API Reference
 =============
 
-This page documents the inner API of the ``statelessauth`` project. The project is separated into the following modules (all relative to ``rest_framework_statelessauth``).
+This page documents the inner API of the ``statelessauth`` project. The project is separated into the following modules (all relative to ``statelessauth``).
 
 #. :ref:`Wire <wire>` - ``.wire`` : responsible for encoding and decoding objects from and to JSON.
 #. :ref:`Engine <engine>` - ``.engine`` : contains the different engines for the encoding and decoding as well as views.

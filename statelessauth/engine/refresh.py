@@ -4,9 +4,9 @@ from typing import Callable, Generic, TypeVar
 
 from django.http import HttpRequest, JsonResponse
 from django.urls import path
-from rest_framework_statelessauth.engine.abstract import AuthEngine
-from rest_framework_statelessauth.prometheus import engine_view_decorator, refresh_engine_acquire_metrics, refresh_engine_refresh_metrics
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.engine.abstract import AuthEngine
+from statelessauth.prometheus import engine_view_decorator, refresh_engine_acquire_metrics, refresh_engine_refresh_metrics
+from statelessauth.wire import AuthWire
 
 import time
 

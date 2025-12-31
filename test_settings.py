@@ -1,16 +1,16 @@
 
 from jose.backends.rsa_backend import RSAKey
 
-from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
-from rest_framework_statelessauth.contrib.auth.wire import UserWire
-from rest_framework_statelessauth.engine.refresh import RefreshEngine
+from statelessauth.contrib.auth.views import user_acquire_view
+from statelessauth.contrib.auth.wire import UserWire
+from statelessauth.engine.refresh import RefreshEngine
 
-SECRET_KEY = 'rest_framework_statelessauth'
+SECRET_KEY = 'statelessauth'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'rest_framework_statelessauth',
+    'statelessauth',
 )
 
 DATABASES = {

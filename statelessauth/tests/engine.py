@@ -7,12 +7,12 @@ from django.test import Client, RequestFactory, TestCase, override_settings
 from django.contrib.auth.models import AnonymousUser, User
 from django.urls import include, path
 
-from rest_framework_statelessauth.contrib.auth.models import Group, Permission, User
-from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
-from rest_framework_statelessauth.contrib.auth.wire import PermissionWire, UserWire
-from rest_framework_statelessauth.engine.abstract import AuthEngine
-from rest_framework_statelessauth.engine.acquire  import AcquireEngine
-from rest_framework_statelessauth.engine.refresh  import RefreshEngine
+from statelessauth.contrib.auth.models import Group, Permission, User
+from statelessauth.contrib.auth.views import user_acquire_view
+from statelessauth.contrib.auth.wire import PermissionWire, UserWire
+from statelessauth.engine.abstract import AuthEngine
+from statelessauth.engine.acquire  import AcquireEngine
+from statelessauth.engine.refresh  import RefreshEngine
 
 from jose.backends.rsa_backend import RSAKey
 from django.conf import settings
@@ -188,7 +188,7 @@ class AcquireEngineTestCases (TestCase):
             "token": token
         }
         assert response.content == bytes( json.dumps(payload), "utf-8" )
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_login (self):
         client = Client()
         user   = dmodels.User.objects.create_user( "user", "user@gmail.com", "user" )
@@ -203,7 +203,7 @@ class AcquireEngineTestCases (TestCase):
             "token": token
         }
         assert response.content == bytes( json.dumps(payload), "utf-8" )
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_logout (self):
         client = Client()
 
@@ -375,7 +375,7 @@ class RefreshEngineTestCases (TestCase):
         assert ctime + int(1e9) * 57                   <= payload['alt'] <= ctime + int(1e9) * 63
         assert ctime + int(1e9) * (3600 * 24 * 14 - 3) <= payload['rlt'] <= ctime + int(1e9) * (3600 * 24 * 14 + 3)
     
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_logout (self):
         client = Client()
 
@@ -383,7 +383,7 @@ class RefreshEngineTestCases (TestCase):
         assert isinstance(response, JsonResponse)
         assert response.status_code == 401
         assert response.content     == b'{"valid": false, "token": ""}'
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_wrong_password (self):
         client = Client()
         user = dmodels.User.objects.create_user("user", "user@user.com", "somepassword")
@@ -392,7 +392,7 @@ class RefreshEngineTestCases (TestCase):
         assert isinstance(response, JsonResponse)
         assert response.status_code == 401
         assert response.content     == b'{"valid": false, "token": ""}'
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_login (self):
         client = Client()
         user = dmodels.User.objects.create_user("user", "user@user.com", "somepassword")
@@ -412,7 +412,7 @@ class RefreshEngineTestCases (TestCase):
 
         assert ctime + int(1e9) * 297                  <= payload['alt'] <= ctime + int(1e9) * 303
         assert ctime + int(1e9) * (3600 * 24 * 14 - 3) <= payload['rlt'] <= ctime + int(1e9) * (3600 * 24 * 14 + 3)
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_deadline_passed (self):
         engine = RefreshEngine( "default", UserWire(), user_acquire_view, 0, 0 )
 
@@ -435,7 +435,7 @@ class RefreshEngineTestCases (TestCase):
         assert isinstance(response, JsonResponse)
         assert response.status_code == 401
         assert response.content     == b'{"valid": false, "token": ""}'
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_no_header (self):
         engine = RefreshEngine( "default", UserWire(), user_acquire_view, 0, 0 )
 
@@ -458,7 +458,7 @@ class RefreshEngineTestCases (TestCase):
         assert isinstance(response, JsonResponse)
         assert response.status_code == 400
         assert response.content     == b'{"valid": false, "token": ""}'
-    @override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.engine")
+    @override_settings(ROOT_URLCONF="statelessauth.tests.engine")
     def test_with_url_dispatch_deadline_fine (self):
         engine2 = RefreshEngine( "default", UserWire(), user_acquire_view, 60 )
 

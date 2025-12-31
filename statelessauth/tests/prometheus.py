@@ -7,14 +7,14 @@ from prometheus_client import REGISTRY
 from django_prometheus.conf import PROMETHEUS_LATENCY_BUCKETS
 from django.contrib.auth import models
 
-from rest_framework_statelessauth.contrib.auth.models import User
-from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
-from rest_framework_statelessauth.contrib.auth.wire import UserWire
-from rest_framework_statelessauth.engine.acquire import AcquireEngine
-from rest_framework_statelessauth.engine.refresh import RefreshEngine
-from rest_framework_statelessauth.prometheus import clear_metrics
-from rest_framework_statelessauth.tests.middlewares import home_page
-from rest_framework_statelessauth.config import StatelessAuthConfig
+from statelessauth.contrib.auth.models import User
+from statelessauth.contrib.auth.views import user_acquire_view
+from statelessauth.contrib.auth.wire import UserWire
+from statelessauth.engine.acquire import AcquireEngine
+from statelessauth.engine.refresh import RefreshEngine
+from statelessauth.prometheus import clear_metrics
+from statelessauth.tests.middlewares import home_page
+from statelessauth.config import StatelessAuthConfig
 
 urlpatterns = [
     path('account/', include(StatelessAuthConfig.instance().get_engine("default").urlpatterns)),
@@ -24,12 +24,12 @@ urlpatterns = [
 
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
-    'rest_framework_statelessauth.middlewares.AuthMiddleware',
+    'statelessauth.middlewares.AuthMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware'
 ]
 
 def loverride_settings (f):
-    return override_settings(ROOT_URLCONF="rest_framework_statelessauth.tests.prometheus", MIDDLEWARE=MIDDLEWARE)(f)
+    return override_settings(ROOT_URLCONF="statelessauth.tests.prometheus", MIDDLEWARE=MIDDLEWARE)(f)
 
 BUCKETS = (
     "0.01",

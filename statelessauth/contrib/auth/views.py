@@ -1,6 +1,6 @@
 
 from django.http import HttpRequest
-from rest_framework_statelessauth.contrib.auth.models import User
+from statelessauth.contrib.auth.models import User
 
 def user_acquire_view (request: HttpRequest) -> "User | None":
     import django.contrib.auth.models as dmodels

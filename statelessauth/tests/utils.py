@@ -1,7 +1,7 @@
 
 from typing import Any, Generic, List, Tuple, TypeVar
 
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.wire import AuthWire
 
 
 T = TypeVar("T")

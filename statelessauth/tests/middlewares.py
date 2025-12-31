@@ -4,12 +4,12 @@ from django.test import RequestFactory, TestCase
 
 from django.contrib.auth import models
 
-from rest_framework_statelessauth.contrib.auth.models import User
-from rest_framework_statelessauth.contrib.auth.views import user_acquire_view
-from rest_framework_statelessauth.contrib.auth.wire import UserWire
-from rest_framework_statelessauth.engine.refresh import RefreshEngine
-from rest_framework_statelessauth.middlewares import AuthMiddleware
-from rest_framework_statelessauth.config import StatelessAuthConfig
+from statelessauth.contrib.auth.models import User
+from statelessauth.contrib.auth.views import user_acquire_view
+from statelessauth.contrib.auth.wire import UserWire
+from statelessauth.engine.refresh import RefreshEngine
+from statelessauth.middlewares import AuthMiddleware
+from statelessauth.config import StatelessAuthConfig
 
 def home_page (request: HttpRequest):
     user: "User | None" = getattr(request, 'user', None)

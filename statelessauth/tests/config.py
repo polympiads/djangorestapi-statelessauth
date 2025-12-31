@@ -1,13 +1,13 @@
 
 from django.test import TestCase
 
-from rest_framework_statelessauth.config import *
-from rest_framework_statelessauth.engine.abstract import AuthEngine
+from statelessauth.config import *
+from statelessauth.engine.abstract import AuthEngine
 from jose.backends.rsa_backend import RSAKey
 
 from django.conf import settings
 
-from rest_framework_statelessauth.contrib.auth.wire import UserWire
+from statelessauth.contrib.auth.wire import UserWire
 
 class ConfigTestCases(TestCase):
     def test_simple_auth_write (self):

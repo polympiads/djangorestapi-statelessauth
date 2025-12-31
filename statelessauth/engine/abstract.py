@@ -1,8 +1,8 @@
 
 from typing import Generic, List, Tuple, TypeVar
-from rest_framework_statelessauth.config import StatelessAuthConfig
-from rest_framework_statelessauth.prometheus import stateless_auth_decode_decorator, stateless_auth_encode_decorator
-from rest_framework_statelessauth.wire import AuthWire
+from statelessauth.config import StatelessAuthConfig
+from statelessauth.prometheus import stateless_auth_decode_decorator, stateless_auth_encode_decorator
+from statelessauth.wire import AuthWire
 
 from jose.jws import Key
 from jose import jws, JWSError
